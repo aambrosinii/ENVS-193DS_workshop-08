@@ -246,7 +246,7 @@ model0 <- lm(
 
 # model 1: all predictors
 model1 <- lm(
-  total_g ~ sla + water_treatment + species_name, # formula
+  total_g ~ sla + water_treatment + species_name, # predictors added in formula
   data = drought_exp_clean # data frame
 )
 
@@ -288,10 +288,11 @@ par(mfrow = c(2,2))
 plot(model1)
 plot(model2)
 plot(model3)
-plot(model4) # residuals look ok for best model
+plot(model4) 
 plot(model5)
 plot(model6)
 plot(model7)
+# all residuals look okay and no outliers
 ```
 
 ## Model selection
@@ -300,11 +301,11 @@ plot(model7)
 AICc(model1,
      model2,
      model3,
-     model4, # best model: water and species
+     model4, # best (lowest) model: water and species
      model5,
      model6,
      model7,
-     model0) |> 
+     model0) |>
   # arranging output in descending order of AIC
   arrange(AICc)
 ```
@@ -321,7 +322,7 @@ summary(model4)
 
 **What is the best model?**
 
-The best model that predicts total plant mass (g) includes water treatment and species (F(7, 62) = 27.08, p < 0.001, $\alpha$ = 0.05), but not SLA.  
+Te best model that predicts total plant mass (g) includes water treatment and species (F(7, 62) = 27.08, p < 0.001, $\alpha$ = 0.05), but not SLA.  
 
 **How much variation in the response (total mass, in grams) does this model explain?**
 
@@ -329,9 +330,9 @@ This model explained 73% (adjusted R^2^) of the variation in total mass.
 
 **How do we interpret the effects of the predictors on the response variable (again, total mass in grams)?**
 
-On average, plant masses in drought stressed conditions were 0.12 $\pm$ 0.04 g less than plant masses in well watered conditions across species.  
+On average, plant masses in drought stressed conditions were 0.12 $\pm$ 0.02 g less than plant masses in well watered conditions across species.  
 
-Across water treatments, all species have different (and higher) masses than _Lotus scoparius_ except _Penstemon centranthifolius_.
+Across the water treatments, all species have different (and higher) masses than _Lotus scoparius_ except _Penstemon centranthifolius_.
 
 # 5. Model predictions
 
@@ -339,7 +340,7 @@ Across water treatments, all species have different (and higher) masses than _Lo
 model4_predictions <- ggpredict(
   model4, # model object
   terms = c("species_name", "water_treatment") # predictors
-) |> 
+) |>
   # treating this like a regular data frame
   # renaming the columns
   rename(species_name = x,
